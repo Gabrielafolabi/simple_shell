@@ -1,77 +1,76 @@
 #include "simpleshell.h"
 
 /**
- *_eputs - prints an input string
+ * input_str - prints an input string
  * @str: the string to be printed
  *
  * Return: Nothing
  */
-void _eputs(char *str)
+void input_str(char *str)
 {
-	int i = 0;
+	int a = 0;
 
 	if (!str)
 		return;
-	while (str[i] != '\0')
+	while (str[a] != '\0')
 	{
-		_eputchar(str[i]);
-		i++;
+		input_char(str[a]);
+		a++;
 	}
 }
 
 /**
- * _eputchar - writes the character c to stderr
+ * input_char - writes the character c to stderr
  * @c: The character to print
  *
  * Return: On success 1.
  * On error, -1 is returned, and errno is set appropriately.
  */
-int _eputchar(char c)
+int input_char(char c)
 {
-	static int i;
+	static int a;
 	static char buf[WRITE_BUF_SIZE];
 
-	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
+	if (c == BUF_FLUSH || a >= WRITE_BUF_SIZE)
 	{
-		write(2, buf, i);
-		i = 0;
+		write(2, buf, a);
+		a = 0;
 	}
 	if (c != BUF_FLUSH)
-		buf[i++] = c;
+		buf[a++] = c;
 	return (1);
 }
 
 /**
- * _putfd - writes the character c to given fd
+ * input_fd - writes the character to given
  * @c: The character to print
  * @fd: The filedescriptor to write to
- *
  * Return: On success 1.
  * On error, -1 is returned, and errno is set appropriately.
  */
-int _putfd(char c, int fd)
+int input_fd(char c, int fd)
 {
-	static int i;
+	static int a;
 	static char buf[WRITE_BUF_SIZE];
 
-	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
+	if (c == BUF_FLUSH || a >= WRITE_BUF_SIZE)
 	{
-		write(fd, buf, i);
-		i = 0;
+		write(fd, buf, a);
+		a = 0;
 	}
 	if (c != BUF_FLUSH)
-		buf[i++] = c;
+		buf[a++] = c;
 	return (1);
 }
 
 /**
- *_putsfd - prints an input string
+ * input_str_fd - prints an input string
  * @str: the string to be printed
  * @fd: the filedescriptor to write to
  *
  * Return: the number of chars put
  */
-int _putsfd(char *str, int fd)
+int input_str_fd(char *str, int fd)
 {
 	int i = 0;
 
@@ -79,7 +78,7 @@ int _putsfd(char *str, int fd)
 		return (0);
 	while (*str)
 	{
-		i += _putfd(*str++, fd);
+		i += input_fd(*str++, fd);
 	}
 	return (i);
 }

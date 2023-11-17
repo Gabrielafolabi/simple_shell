@@ -17,7 +17,7 @@ int prompt(info_t *info, char **agv)
 		clear_info(info);
 		if (interactive(info))
 			_puts("$Troy-Gabe$ ");
-		_eputchar(BUF_FLUSH);
+		input_char(BUF_FLUSH);
 		ret = get_input(info);
 		if (ret != -1)
 		{
@@ -56,14 +56,14 @@ int findbuiltin(info_t *info)
 {
 	int i, built_in_retain = -1;
 	builtin_table builtintbl[] = {
-		{"exit", _myexit},
-		{"env", _myenv},
-		{"help", _myhelp},
-		{"history", _myhistory},
-		{"setenv", _mysetenv},
-		{"unsetenv", _myunsetenv},
-		{"cd", _mycd},
-		{"alias", _myalias},
+		{"exit", shell_exit},
+		{"env", my_env},
+		{"help", my_cd},
+		{"history", history},
+		{"setenv", my_setenv},
+		{"unsetenv", my_unsetenv},
+		{"cd", curr_cd},
+		{"alias", mimc_alias},
 		{NULL, NULL}
 	};
 
@@ -100,7 +100,7 @@ void fnd_comd(info_t *info)
 	if (!b)
 		return;
 
-	path = find_path(info, _getenv(info, "PATH="), info->argv[0]);
+	path = find_path(info, get_env(info, "PATH="), info->argv[0]);
 	if (path)
 	{
 		info->path = path;
@@ -108,7 +108,7 @@ void fnd_comd(info_t *info)
 	}
 	else
 	{
-		if ((interactive(info) || _getenv(info, "PATH=")
+		if ((interactive(info) || get_env(info, "PATH=")
 			|| info->argv[0][0] == '/') && is_cmd(info, info->argv[0]))
 			fork_comd(info);
 		else if (*(info->arg) != '\n')

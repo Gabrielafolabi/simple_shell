@@ -26,18 +26,18 @@ int main(int ac, char **av)
 				exit(126);
 			if (errno == ENOENT)
 			{
-				_eputs(av[0]);
-				_eputs(": 0: Can't open ");
-				_eputs(av[1]);
-				_eputchar('\n');
-				_eputchar(BUF_FLUSH);
+				input_str(av[0]);
+				input_str(": 0: Can't open ");
+				input_str(av[1]);
+				input_char('\n');
+				input_char(BUF_FLUSH);
 				exit(127);
 			}
 			return (EXIT_FAILURE);
 		}
 		info->readfd = fd;
 	}
-	populate_env_list(info);
+	env_list(info);
 	read_history(info);
 	prompt(info, av);
 	return (EXIT_SUCCESS);
