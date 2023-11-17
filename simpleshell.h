@@ -113,9 +113,9 @@ typedef struct builtin
 
 /* toem_shloop.c */
 int prompt(info_t *, char **);
-int find_builtin(info_t *);
-void find_cmd(info_t *);
-void fork_cmd(info_t *);
+int findbuiltin(info_t *);
+void fnd_comd(info_t *);
+void fork_comd(info_t *);
 
 /* toem_parser.c */
 int is_cmd(info_t *, char *);
@@ -134,7 +134,7 @@ int _putsfd(char *str, int fd);
 /* toem_string.c */
 int _strlen(char *);
 int _strcmp(char *, char *);
-char *starts_with(const char *, const char *);
+char *strt_with(const char *, const char *);
 char *_strcat(char *, char *);
 
 /* toem_string1.c */

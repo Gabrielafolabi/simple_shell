@@ -1,30 +1,30 @@
 #include "simpleshell.h"
 
 /**
- * prompt - main shell loop
+ * prompt - main shell prompt
  * @info: the parameter & return info struct
- * @argv: the argument vector from main()
+ * @agv: the argument vector from main()
  *
  * Return: 0 on success, 1 on error, or error code
  */
 int prompt(info_t *info, char **agv)
 {
-	ssize_t r = 0;
-	int builtin_ret = 0;
+	ssize_t ret = 0;
+	int builtin_retain = 0;
 
-	while (r != -1 && builtin_ret != -2)
+	while (ret != -1 && builtin_retain != -2)
 	{
 		clear_info(info);
 		if (interactive(info))
-			_puts("$Troy ");
+			_puts("$Troy-Gabe$ ");
 		_eputchar(BUF_FLUSH);
-		r = get_input(info);
-		if (r != -1)
+		ret = get_input(info);
+		if (ret != -1)
 		{
 			set_info(info, agv);
-			builtin_ret = find_builtin(info);
-			if (builtin_ret == -1)
-				find_cmd(info);
+			builtin_retain = findbuiltin(info);
+			if (builtin_retain == -1)
+				fnd_comd(info);
 		}
 		else if (interactive(info))
 			_putchar('\n');
@@ -34,17 +34,17 @@ int prompt(info_t *info, char **agv)
 	free_info(info, 1);
 	if (!interactive(info) && info->status)
 		exit(info->status);
-	if (builtin_ret == -2)
+	if (builtin_retain == -2)
 	{
 		if (info->err_num == -1)
 			exit(info->status);
 		exit(info->err_num);
 	}
-	return (builtin_ret);
+	return (builtin_retain);
 }
 
 /**
- * find_builtin - finds a builtin command
+ * findbuiltin - finds a builtin command
  * @info: the parameter & return info struct
  *
  * Return: -1 builtin not found,
@@ -52,9 +52,9 @@ int prompt(info_t *info, char **agv)
  *			1 builtin found not successful,
  *			-2 signals exit()
  */
-int find_builtin(info_t *info)
+int findbuiltin(info_t *info)
 {
-	int i, built_in_ret = -1;
+	int i, built_in_retain = -1;
 	builtin_table builtintbl[] = {
 		{"exit", _myexit},
 		{"env", _myenv},
@@ -71,22 +71,22 @@ int find_builtin(info_t *info)
 		if (_strcmp(info->argv[0], builtintbl[i].type) == 0)
 		{
 			info->line_count++;
-			built_in_ret = builtintbl[i].func(info);
+			built_in_retain = builtintbl[i].func(info);
 			break;
 		}
-	return (built_in_ret);
+	return (built_in_retain);
 }
 
 /**
- * find_cmd - finds a command in PATH
+ * fnd_comd - finds a command in PATH
  * @info: the parameter & return info struct
  *
  * Return: void
  */
-void find_cmd(info_t *info)
+void fnd_comd(info_t *info)
 {
 	char *path = NULL;
-	int i, k;
+	int a, b;
 
 	info->path = info->argv[0];
 	if (info->linecount_flag == 1)
@@ -94,23 +94,23 @@ void find_cmd(info_t *info)
 		info->line_count++;
 		info->linecount_flag = 0;
 	}
-	for (i = 0, k = 0; info->arg[i]; i++)
-		if (!is_delim(info->arg[i], " \t\n"))
-			k++;
-	if (!k)
+	for (a = 0, b = 0; info->arg[a]; a++)
+		if (!is_delim(info->arg[a], " \t\n"))
+			b++;
+	if (!b)
 		return;
 
 	path = find_path(info, _getenv(info, "PATH="), info->argv[0]);
 	if (path)
 	{
 		info->path = path;
-		fork_cmd(info);
+		fork_comd(info);
 	}
 	else
 	{
 		if ((interactive(info) || _getenv(info, "PATH=")
 			|| info->argv[0][0] == '/') && is_cmd(info, info->argv[0]))
-			fork_cmd(info);
+			fork_comd(info);
 		else if (*(info->arg) != '\n')
 		{
 			info->status = 127;
@@ -120,19 +120,19 @@ void find_cmd(info_t *info)
 }
 
 /**
- * fork_cmd - forks a an exec thread to run cmd
+ * fork_comd - forks a an exec thread to run cmd
  * @info: the parameter & return info struct
  *
  * Return: void
  */
-void fork_cmd(info_t *info)
+void fork_comd(info_t *info)
 {
 	pid_t child_pid;
 
 	child_pid = fork();
 	if (child_pid == -1)
 	{
-		/* TODO: PUT ERROR FUNCTION */
+
 		perror("Error:");
 		return;
 	}
@@ -145,7 +145,7 @@ void fork_cmd(info_t *info)
 				exit(126);
 			exit(1);
 		}
-		/* TODO: PUT ERROR FUNCTION */
+
 	}
 	else
 	{
