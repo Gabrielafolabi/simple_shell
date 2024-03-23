@@ -1,4 +1,4 @@
-#include "simpleshell.h"
+#include "fashell.h"
 
 /**
  * main - entry point
@@ -9,7 +9,7 @@
  */
 int main(int ac, char **av)
 {
-	info_t info[] = { INFO_INIT };
+	finfo_a finfo[] = { INFO_INIT };
 	int fd = 2;
 
 	asm ("mov %1, %0\n\t"
@@ -26,20 +26,19 @@ int main(int ac, char **av)
 				exit(126);
 			if (errno == ENOENT)
 			{
-				input_str(av[0]);
-				input_str(": 0: Can't open ");
-				input_str(av[1]);
-				input_char('\n');
-				input_char(BUF_FLUSH);
+				_fputs(av[0]);
+				_fputs(": 0: Can't open ");
+				_fputs(av[1]);
+				_fputchar('\n');
+				_fputchar(FBUF_FLUSH);
 				exit(127);
 			}
 			return (EXIT_FAILURE);
 		}
-		info->readfd = fd;
+		(*finfo).readfd = fd;
 	}
-	env_list(info);
-	read_history(info);
-	prompt(info, av);
+	fpop_env_list(finfo);
+	read_fhistory(finfo);
+	shell(finfo, av);
 	return (EXIT_SUCCESS);
 }
-

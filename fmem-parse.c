@@ -1,17 +1,34 @@
-#include "simpleshell.h"
+#include "fashell.h"
 
 /**
- * is_cmd - determines if a file is an executable command
- * @info: the info struct
+ * bfree - frees a pointer and NULLs the address
+ * @ptr: address of the pointer to free
+ *
+ * Return: 1 if freed, otherwise 0.
+ */
+int bfree(void **ptr)
+{
+	if (ptr && *ptr)
+	{
+		free(*ptr);
+		*ptr = NULL;
+		return (1);
+	}
+	return (0);
+}
+
+/**
+ * fcmd - determines if a file is an executable command
+ * @finfo: the finfo struct
  * @path: path to the file
  *
  * Return: 1 if true, 0 otherwise
  */
-int is_cmd(info_t *info, char *path)
+int fcmd(finfo_a *finfo, char *path)
 {
 	struct stat st;
 
-	(void)info;
+	(void)finfo;
 	if (!path || stat(path, &st))
 		return (0);
 
@@ -23,14 +40,14 @@ int is_cmd(info_t *info, char *path)
 }
 
 /**
- * dup_chars - duplicates characters
+ * fdup_chars - duplicates characters
  * @pathstr: the PATH string
  * @start: starting index
  * @stop: stopping index
  *
  * Return: pointer to new buffer
  */
-char *dup_chars(char *pathstr, int start, int stop)
+char *fdup_chars(char *pathstr, int start, int stop)
 {
 	static char buf[1024];
 	int i = 0, k = 0;
@@ -43,30 +60,30 @@ char *dup_chars(char *pathstr, int start, int stop)
 }
 
 /**
- * find_path - finds this cmd in the PATH string
- * @info: the info struct
+ * find_fpath - finds this cmd in the PATH string
+ * @finfo: the finfo struct
  * @pathstr: the PATH string
  * @cmd: the cmd to find
  *
  * Return: full path of cmd if found or NULL
  */
-char *find_path(info_t *info, char *pathstr, char *cmd)
+char *find_fpath(finfo_a *finfo, char *pathstr, char *cmd)
 {
 	int i = 0, curr_pos = 0;
 	char *path;
 
 	if (!pathstr)
 		return (NULL);
-	if ((_strlen(cmd) > 2) && strt_with(cmd, "./"))
+	if ((_strlen(cmd) > 2) && fstarts_with(cmd, "./"))
 	{
-		if (is_cmd(info, cmd))
+		if (fcmd(finfo, cmd))
 			return (cmd);
 	}
 	while (1)
 	{
 		if (!pathstr[i] || pathstr[i] == ':')
 		{
-			path = dup_chars(pathstr, curr_pos, i);
+			path = fdup_chars(pathstr, curr_pos, i);
 			if (!*path)
 				_strcat(path, cmd);
 			else
@@ -74,7 +91,7 @@ char *find_path(info_t *info, char *pathstr, char *cmd)
 				_strcat(path, "/");
 				_strcat(path, cmd);
 			}
-			if (is_cmd(info, path))
+			if (fcmd(finfo, path))
 				return (path);
 			if (!pathstr[i])
 				break;
