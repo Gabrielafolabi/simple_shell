@@ -29,7 +29,7 @@
 #define FCONV_UNS	2
 
 /* 1 for default system getline() else use the custom _fgetline */
-#define FUSE_GET 1
+#define FUSE_GET 0
 
 #define FHIST_FILE	".simple_shell_fhistory"
 #define FHIST_MAX	4096
